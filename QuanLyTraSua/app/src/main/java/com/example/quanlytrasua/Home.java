@@ -6,8 +6,6 @@ import android.os.Bundle;
 import com.example.quanlytrasua.Common.Common;
 import com.example.quanlytrasua.Interface.ItemClickListener;
 import com.example.quanlytrasua.Model.Category;
-
-import com.example.quanlytrasua.Service.ListenOrder;
 import com.example.quanlytrasua.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
      AppBarConfiguration mAppBarConfiguration;
@@ -74,10 +71,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             public void onClick(View view) {
                 Intent cartIntent = new Intent(Home.this,Cart.class);
                 startActivity(cartIntent);
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
             }
         });
 
@@ -101,18 +94,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         layoutManager = new LinearLayoutManager(this);
         recycler_menu.setLayoutManager(layoutManager);
 
-        if(Common.isConnectedToInternet(this))
-            loadMenu();
-        else
-        {
-            Toast.makeText(this,"Please check your connection !!",Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Register Service
-        Intent service = new Intent(Home.this, ListenOrder.class);
-        startService(service);
-
+        loadMenu();
     }
 
     private void loadMenu() {
@@ -144,16 +126,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == R.id.refresh)
-            loadMenu();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_controller_view_tag);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
@@ -169,27 +141,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.nav_menu:
 
             case R.id.nav_cart:
-            {
-                Intent cartIntent = new Intent(Home.this,Cart.class);
-                startActivity(cartIntent);
-                break;
-            }
 
             case R.id.nav_orders:
-            {
-                Intent orderIntent = new Intent(Home.this,OrderStatus.class);
-                startActivity(orderIntent);
-                break;
-            }
 
             case R.id.nav_log_out:
-            {
-                Intent signIn = new Intent(Home.this,SignIn.class);
-                signIn.addFlags((Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                startActivity(signIn);
-                break;
-
-            }
 
         }
 
