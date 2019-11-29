@@ -3,12 +3,17 @@ package com.example.quanlytrasua;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.quanlytrasua.Common.Common;
@@ -20,9 +25,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import io.paperdb.Paper;
+
 public class SignIn extends AppCompatActivity {
     EditText edtPhone,edtPassword;
     Button btnSignIn;
+     CheckBox ckbRemember;
+    TextView txtForgotPwd;
+
+    FirebaseDatabase database;
+    DatabaseReference table_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +44,32 @@ public class SignIn extends AppCompatActivity {
         edtPhone = (MaterialEditText)findViewById(R.id.edtPhone);
         edtPassword = (MaterialEditText)findViewById(R.id.edtPassword);
         btnSignIn = (Button)findViewById(R.id.btnSignIn);
+ 	ckbRemember = (CheckBox)findViewById(R.id.ckbRemember);
+        txtForgotPwd = (TextView)findViewById(R.id.txtForgotPwd);
+
+        //Init Paper
+        Paper.init(this);
 
         //Init Firebase
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference table_user = database.getReference("User");
+        database = FirebaseDatabase.getInstance();
+        table_user = database.getReference("User");
 
+        txtForgotPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showForgotPwdDialog();
+            }
+        });
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+		if(ckbRemember.isChecked())
+                    {
+                        Paper.book().write(Common.USER_KEY,edtPhone.getText().toString());
+                        Paper.book().write(Common.PWD_KEY,edtPassword.getText().toString());
+
+                    }
                 final ProgressDialog mDialog = new ProgressDialog(SignIn.this);
                 mDialog.setMessage("Please waiting ...");
                 mDialog.show();
@@ -78,5 +108,49 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
+    }
+  private void showForgotPwdDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Forgot Password");
+        builder.setMessage("Enter your secure code");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View forgot_view = inflater.inflate(R.layout.forgot_password_layout,null);
+
+        builder.setView(forgot_view);
+        builder.setIcon(R.drawable.ic_security_black_24dp);
+
+        final MaterialEditText edtPhone = (MaterialEditText)forgot_view.findViewById(R.id.edtPhone);
+        final MaterialEditText edtSecureCode = (MaterialEditText)forgot_view.findViewById(R.id.edtSecureCode);
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                table_user.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.child(edtPhone.getText().toString())
+                                .getValue(User.class);
+                        if (user.getSecureCode().equals(edtSecureCode.getText().toString()))
+                            Toast.makeText(SignIn.this, "Your Password: "+user.getPassword(), Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(SignIn.this, "Wrong secure code !", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
     }
 }

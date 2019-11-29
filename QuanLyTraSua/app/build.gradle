@@ -21,6 +21,8 @@ android {
 
 
 dependencies {
+ implementation 'io.paperdb:paperdb:2.1'
+    implementation 'com.github.rey5137:material:1.2.4'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'

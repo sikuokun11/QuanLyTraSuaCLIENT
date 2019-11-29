@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.TextView;
+import io.paperdb.Paper;
+
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
      AppBarConfiguration mAppBarConfiguration;
@@ -145,6 +147,17 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.nav_orders:
 
             case R.id.nav_log_out:
+<<<<<<< Updated upstream
+=======
+            {	                
+		Paper.book().destroy();
+                Intent signIn = new Intent(Home.this,SignIn.class);
+                signIn.addFlags((Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(signIn);
+                break;
+
+            }
+>>>>>>> Stashed changes
 
         }
 
