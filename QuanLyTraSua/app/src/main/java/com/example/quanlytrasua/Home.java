@@ -1,6 +1,5 @@
 package com.example.quanlytrasua;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.quanlytrasua.Common.Common;
@@ -37,10 +36,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-     AppBarConfiguration mAppBarConfiguration;
 
+    private AppBarConfiguration mAppBarConfiguration;
     FirebaseDatabase database;
     DatabaseReference category;
 
@@ -48,8 +48,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     RecyclerView recycler_menu;
     RecyclerView.LayoutManager layoutManager;
-
-    FirebaseRecyclerAdapter<Category,MenuViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +67,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cartIntent = new Intent(Home.this,Cart.class);
-                startActivity(cartIntent);
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
@@ -82,6 +80,16 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        //mAppBarConfiguration = new AppBarConfiguration.Builder(
+        //        R.id.nav_menu, R.id.nav_cart, R.id.nav_orders,
+        //        R.id.nav_log_out)
+        //        .setDrawerLayout(drawer)
+        //        .build();
+        //NavController navController = Navigation.findNavController(this, R.id.nav_controller_view_tag);
+        //NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        //NavigationUI.setupWithNavController(navigationView, navController);
 
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
@@ -98,19 +106,17 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void loadMenu() {
-        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,category) {
+        FirebaseRecyclerAdapter<Category,MenuViewHolder> adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,category) {
             @Override
             protected void populateViewHolder(MenuViewHolder menuViewHolder, Category category, int i) {
                 menuViewHolder.txtMenuName.setText(category.getName());
-                Picasso.with(getBaseContext()).load(category.getImage()).into(menuViewHolder.imageView);
-
+                Picasso.with(getBaseContext()).load(category.getImage())
+                        .into(menuViewHolder.imageView);
                 final Category clickItem = category;
                 menuViewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                       Intent foodList = new Intent(Home.this, FoodList.class);
-                       foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
-                       startActivity(foodList);
+                        Toast.makeText(Home.this,""+clickItem.getName(),Toast.LENGTH_SHORT).show();
                     }
                 });
             }
