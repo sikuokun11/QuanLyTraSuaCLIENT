@@ -190,7 +190,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             {
                 Paper.book().destroy();
 
-                Intent signIn = new Intent(Home.this,SignIn.class);
+                Intent signIn = new Intent(Home.this,MainActivity.class);
                 signIn.addFlags((Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 startActivity(signIn);
                 break;

@@ -3,8 +3,13 @@ package com.example.quanlytrasua;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActionBar;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 public class FoodDetail extends AppCompatActivity {
 
     TextView food_name,food_price,food_description;
@@ -44,9 +51,10 @@ public class FoodDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_detail);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         database =FirebaseDatabase.getInstance();
         foods = database.getReference("Foods");
-
         numberButton = (ElegantNumberButton) findViewById(R.id.number_button);
         btnCart = (FloatingActionButton) findViewById(R.id.btnCart);
 
@@ -63,6 +71,7 @@ public class FoodDetail extends AppCompatActivity {
 
 
                 ));
+                btnCart.setBackgroundTintList(getResources().getColorStateList(R.color.colorRed));
                 Toast.makeText(FoodDetail.this, "Added to Cart", Toast.LENGTH_SHORT).show();
             }
         });
@@ -89,6 +98,16 @@ public class FoodDetail extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id ==  android.R.id.home){
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 
     private void getDetailFood(final String foodId){
@@ -118,5 +137,9 @@ public class FoodDetail extends AppCompatActivity {
 
             }
         });
+
+
     }
+
+
 }
