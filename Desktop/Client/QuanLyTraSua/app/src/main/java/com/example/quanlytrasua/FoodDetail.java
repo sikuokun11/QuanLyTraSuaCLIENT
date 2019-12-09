@@ -53,6 +53,7 @@ public class FoodDetail extends AppCompatActivity {
         setContentView(R.layout.activity_food_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Sản phẩm");
         database =FirebaseDatabase.getInstance();
         foods = database.getReference("Foods");
         numberButton = (ElegantNumberButton) findViewById(R.id.number_button);
@@ -83,7 +84,7 @@ public class FoodDetail extends AppCompatActivity {
         food_image = (ImageView) findViewById(R.id.img_food);
 
         collapsingToolbarLayout = findViewById(R.id.collapsing);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppbar);
+       // collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppbar);
         collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsingToolbar);
 
         if(getIntent() != null)
@@ -117,7 +118,7 @@ public class FoodDetail extends AppCompatActivity {
                 currentFood = dataSnapshot.getValue(Food.class);
 
                 Picasso.with(getBaseContext()).load(currentFood.getImage()).into(food_image);
-                collapsingToolbarLayout.setTitle(currentFood.getName());
+                //collapsingToolbarLayout.setTitle(currentFood.getName());
                 food_price.setText(currentFood.getPrice());
                 food_name.setText(currentFood.getName());
                 food_description.setText(currentFood.getDescription());
@@ -125,7 +126,7 @@ public class FoodDetail extends AppCompatActivity {
                 Food food = dataSnapshot.getValue(Food.class);
 
                 Picasso.with(getBaseContext()).load(food.getImage()).into(food_image);
-                collapsingToolbarLayout.setTitle(food.getName());
+                //collapsingToolbarLayout.setTitle(food.getName());
                 food_price.setText(food.getPrice());
                 food_name.setText(food.getName());
                 food_description.setText(food.getDescription());

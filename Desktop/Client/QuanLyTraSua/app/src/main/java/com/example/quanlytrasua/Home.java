@@ -13,6 +13,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -35,9 +36,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import android.view.Menu;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +53,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     DatabaseReference category;
 
     TextView txtFullName;
-
+    SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recycler_menu;
     RecyclerView.LayoutManager layoutManager;
 
@@ -62,7 +65,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        swipeRefreshLayout = findViewById(R.id.Swipe);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Menu");
@@ -71,6 +74,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         //thit Firebase
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +109,19 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recycler_menu.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recycler_menu.setLayoutManager(layoutManager);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh() {
+                loadMenu();
+                new Handler().postDelayed(new Runnable(){
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },2000);
+            }
+        });
 
         if(Common.isConnectedToInternet(this))
             loadMenu();
@@ -140,21 +158,21 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         recycler_menu.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == R.id.refresh)
-            loadMenu();
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item)
+//    {
+//        if(item.getItemId() == R.id.refresh)
+//            loadMenu();
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     @Override
